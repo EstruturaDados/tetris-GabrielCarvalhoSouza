@@ -5,6 +5,58 @@
 // Este código inicial serve como base para o desenvolvimento do sistema de controle de peças.
 // Use as instruções de cada nível para desenvolver o desafio.
 
+#define MAX 5
+
+int id = 0;
+
+typedef struct {
+    char tipo;
+    int id;
+} Peca;
+
+typedef struct {
+    Peca peca[MAX];
+    int inicio;
+    int fim;
+    int total;
+} Fila;
+
+void inicializarFila(Fila *fila) {
+    fila->inicio = 0;
+    fila->fim = 0;
+    fila->total = 0;
+}
+
+int filaCheia(Fila *f) {
+    return f->total == MAX;
+}
+
+int filaVazia(Fila *f) {
+    return f->total == 0;
+}
+
+void inserirFila(Fila *fila, Peca peca) {
+    peca.id = id;
+    id++;
+    fila->peca[fila->fim] = peca;
+    fila->fim = (fila->fim + 1) % MAX;
+    fila->total++;
+}
+
+void removerFila(Fila *fila, Peca *peca) {
+    *peca = fila->peca[fila->inicio];
+    fila->inicio = (fila->inicio + 1) % MAX;
+    fila->total--;
+}
+
+void mostrarFila(Fila *fila) {
+    printf("Fila de peças:\n");
+    for (int i = 0, idx = fila->inicio; i < fila->total; i++, idx = (idx + 1) % MAX) {
+        printf("[%c,%d] ", fila->peca[idx].tipo, fila->peca[idx].id);
+    }
+    printf("\n");
+}
+
 int main() {
 
     // 🧩 Nível Novato: Fila de Peças Futuras
@@ -18,8 +70,63 @@ int main() {
     //      1 - Jogar peça (remover da frente)
     //      0 - Sair
     // - A cada remoção, insira uma nova peça ao final da fila.
+    Peca p1 = {'I'};
+    Peca p2 = {'O'};
+    Peca p3 = {'T'};
+    Peca p4 = {'L'};
+    Peca p5 = {'I'};
 
+    Fila fila;
+    inicializarFila(&fila);
 
+    inserirFila(&fila, p1);
+    inserirFila(&fila, p2);
+    inserirFila(&fila, p3);
+    inserirFila(&fila, p4);
+    inserirFila(&fila, p5);
+
+    int opcao;
+    do {
+        printf("Menu:\n");
+        printf("1 - Jogar peça (remover da frente)\n");
+        printf("2 - Inserir peça na fila\n");
+        printf("3 - Mostrar fila\n");
+        printf("0 - Sair\n");
+        scanf("%d", &opcao);
+        getchar();
+
+        switch (opcao) {
+            case 1:
+                Peca pecaRemovida;
+                if (filaVazia(&fila)) {
+                    printf("Fila vazia! Não é possível remover peça.\n");
+                    break;
+                }
+                removerFila(&fila, &pecaRemovida);
+                printf("Peça removida: [%c,%d]\n", pecaRemovida.tipo, pecaRemovida.id);
+                break;
+            case 2:
+                Peca novaPeca;
+                if (filaCheia(&fila)) {
+                    printf("Fila cheia! Não é possível inserir peça.\n");
+                    break;
+                }
+                printf("Digite o tipo da peça: ");
+                scanf("%c", &novaPeca.tipo);
+                novaPeca.id = id;
+                id++;
+                inserirFila(&fila, novaPeca);
+                break;
+            case 3:
+                mostrarFila(&fila);
+                break;
+            case 0:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+    } while (opcao != 0);
 
     // 🧠 Nível Aventureiro: Adição da Pilha de Reserva
     //
@@ -53,4 +160,3 @@ int main() {
 
     return 0;
 }
-
